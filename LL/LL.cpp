@@ -276,6 +276,86 @@ public:
         return head;
     }
 };
+// 142. Linked List Cycle II
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode(int x) : val(x), next(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode *detectCycle(ListNode *head) {
+        if (head == NULL) return NULL;
+        if (head->next == NULL) return NULL;
+        
+        ListNode* slow = head;
+        ListNode* fast = head;
+        while (fast != NULL && fast->next!=NULL) {
+            slow = slow->next;
+            fast = fast->next->next;
+            if (slow == fast) {
+                slow = head;
+                while (slow != fast) {
+                    slow = slow->next;
+                    fast = fast->next;
+                }
+                return fast;
+            }
+        }
+        return NULL;
+    }
+};
+
+// 143. Reorder List
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+class Solution {
+public:
+    ListNode* reverse(ListNode* head) {
+        ListNode* prev = nullptr;
+        while (head != NULL) {
+            ListNode* next = head->next;
+            head->next = prev;
+            prev = head;
+            head = next;
+        }
+        return prev;
+    }
+
+    void reorderList(ListNode* head) {
+        ListNode* slow = head;
+        ListNode* fast = head;
+
+        while (fast->next != NULL && fast->next->next != NULL) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        ListNode* second_half = reverse(slow->next);
+        slow->next = nullptr;
+        ListNode* first_half = head;
+
+        while (second_half != NULL) {
+            ListNode* temp1 = first_half->next;
+            ListNode* temp2 = second_half->next;
+            first_half->next = second_half;
+            second_half->next = temp1;
+            
+            first_half = temp1;
+            second_half = temp2;
+        }
+    }
+};
 int main() {
   vector<int> arr = {1,2,3,4};
   Node* head = convertarraytoLL(arr);

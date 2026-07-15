@@ -463,7 +463,202 @@ public:
         return res_sum;
     }
 };
+// Max Sum Subarray of size K.
+class Solution {
+  public:
+    int maxSubarraySum(vector<int>& arr, int k) {
+        // code here
+        int res = 0;
+        int sum = 0;
+        int n = arr.size();
+        int low = 0;
+        int high = k-1;
+        
+        for (int i=low; i<=high; i++) {
+            sum+=arr[i];
+        }
+        while (high <= n-1) {
+            res = max(sum,res);
+            low++;
+            high++;
+            if (high>n-1) break;
+            sum = sum - arr[low-1] + arr[high];
+        }
+        return res;
+    }
+// 209. Minimum Size Subarray Sum.
+class Solution {
+public:
+    int minSubArrayLen(int target, vector<int>& nums) {
+        int n = nums.size();
+        int low = 0;
+        int high = 0;
+        int sum = 0;
+        int res = INT_MAX;
+        int len = 0;
 
+        while (high <= n-1) {
+            sum+=nums[high];
+            while (sum >= target) {
+                len = (high-low)+1;
+                res = min(res,len);
+                sum = sum - nums[low];
+                low++;
+            }
+            high++;
+        }
+        if (res == INT_MAX) return 0;
+        else return res;
+    }
+};
+
+class Solution {
+  public:
+    int longestKSubstr(string &s, int k) {
+        // code here
+        map<char, int> mpp;
+        int len = 0;
+        int n = s.size();
+        int res = -1;
+        int low = 0;
+        for (int high=0; high<=n-1; high++) {
+            mpp[s[high]]++;
+            while (mpp.size() > k) {
+                mpp[s[low]]--;
+                if (mpp[s[low]] == 0) {
+                    mpp.erase(s[low]);
+                }
+                low++;
+            }
+            if (mpp.size() == k) {
+                len = high-low+1;
+                res = max(len,res);
+            }
+        }
+        return res;
+    }
+};
+
+class Solution {
+    public:
+        int totalFruit(vector<int>& fruits) {
+            map<int,int> mpp;
+            int n = fruits.size();
+            int low = 0;
+            int high = 0;
+            int res = INT_MIN;
+            if (fruits.size() == 1) {
+                return 1;
+            }
+            while (high < n) {
+                mpp[fruits[high]]++;
+                while (mpp.size()>2) {
+                    mpp[fruits[low]]--;
+                    if (mpp[fruits[low]] == 0) {
+                        mpp.erase(fruits[low]);
+                    }
+                    low++;
+                }
+                    int len = (high-low)+1;
+                    res = max(res, len);
+                high++;
+            }
+            return res;
+        }
+    };
+
+    class Solution {
+        public:
+            int lengthOfLongestSubstring(string s) {
+                map<int,int> mpp;
+                int high = 0;
+                int low = 0;
+                int res = INT_MIN;
+                int n = s.size();
+                
+                if(n == 0) {
+                    return 0;
+                }
+                while (high < n) {
+                    mpp[s[high]]++;
+                    while (mpp[s[high]] >= 2) {
+                        mpp[s[low]]--;
+                        low++;
+                    }
+                    int len = (high-low)+1;
+                    res = max(res, len);
+                    high++;
+                }
+                return res;
+            }
+        };
+
+};
+//76. Minimum Window Substring
+class Solution {
+public:
+    bool compare(vector<int> & have, vector<int>& need) {
+        for (int i=0; i<256; i++) {
+            if (have[i]<need[i]) return false;
+        }
+        return true;
+    }
+
+    string minWindow(string s, string t) {
+        vector<int> have(256,0);
+        vector<int> need(256,0);
+
+        int m = t.size();
+        int n = s.size();
+
+        for (int i=0; i<=m-1; i++) {
+            need[t[i]]++;
+        }
+
+        int low = 0;
+        int high = 0;
+        int res = INT_MAX;
+        int start = -1;
+
+        if(n<m) return "";
+
+        while (high < n) {
+            have[s[high]]++;
+            while (compare(have,need)) {
+                int len = (high-low)+1;
+                if (res > len) {
+                    res = len;
+                    start = low;
+                }
+                have[s[low]]--;
+                low++;
+            }
+            high++;
+        }
+        if (start == -1) {
+            return "";
+        }
+        return s.substr(start,res);
+    }
+};
+// 53. Maximum Subarray --> kadane's algo.
+class Solution {
+public:
+    int maxSubArray(vector<int>& nums) {
+        int best_ending = nums[0];
+        int ans = nums[0];
+        int n = nums.size();
+        
+        for (int i=1; i<=n-1; i++) {
+            int v1 = best_ending + nums[i];
+            int v2 = nums[i];
+
+            best_ending = max(v1,v2);
+            ans = max(ans, best_ending);
+        }
+        return ans;
+    }
+};
 int main () {
   int n; 
   cin >> n;
