@@ -659,6 +659,27 @@ public:
         return ans;
     }
 };
+// 152. Maximum Product Subarray. --> kadane's algo.
+class Solution {
+public:
+    int maxProduct(vector<int>& nums) {
+        int max_end = nums[0];
+        int min_end = nums[0];
+        int ans = nums[0];
+        int n = nums.size();
+
+        for (int i=1; i<=n-1; i++) {
+            int v1 = max_end * nums[i];
+            int v2 = min_end * nums[i];
+            int v3 = nums[i];
+
+            max_end = max(v1, max(v2,v3));
+            min_end = min(v1, min(v2,v3));
+            ans = max(ans, max(max_end, min_end));
+        }
+        return ans;
+    }
+};
 int main () {
   int n; 
   cin >> n;
