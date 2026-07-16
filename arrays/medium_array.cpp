@@ -680,6 +680,54 @@ public:
         return ans;
     }
 };
+
+// 1186. Maximum Subarray Sum with One Deletion
+class Solution {
+public:
+    int maximumSum(vector<int>& arr) {
+
+        int n = arr.size();
+        int no_del = arr[0];
+        int one_del = INT_MIN;
+        int ans = arr[0];
+
+        for (int i=1; i<n; i++) {
+            int prev_no_del = no_del;
+            int prev_one_del = one_del;
+
+            no_del = max(arr[i], no_del + arr[i]);
+            
+            int v2 = 0;
+            if (prev_one_del == INT_MIN) {
+                v2 = arr[i];
+            }
+            else v2 = prev_one_del + arr[i];
+
+            one_del = max(v2, prev_no_del);
+            ans = max(ans, max(no_del, one_del));
+        }
+        return ans;
+    }
+};
+
+// 1749. Maximum Absolute Sum of Any Subarray
+class Solution {
+public:
+    int maxAbsoluteSum(vector<int>& nums) {
+        int n = nums.size();
+        int max_end = nums[0];
+        int min_end = nums[0];
+        int ans = abs(nums[0]);
+
+        for (int i=1; i<n; i++) {
+            max_end = max(nums[i], max_end + nums[i]);
+            min_end = min(nums[i], min_end + nums[i]);
+            ans = max({ans, abs(max_end), abs(min_end)});
+        }
+        return ans;
+    }
+
+};
 int main () {
   int n; 
   cin >> n;

@@ -135,6 +135,32 @@ void num_appearing_one_time (int arr[], int n) {
   cout << "the single number is:" << single << endl;
 }
 
+// --> 219. Contains Duplicate II
+class Solution {
+public:
+    bool containsNearbyDuplicate(vector<int>& nums, int k) {
+        map<int,int> mpp;
+        int n = nums.size();
+        int low = 0;
+        int high = 0;
+        int ans = INT_MAX;
+
+        if (n == 1) return false;
+
+        while (high < n) {
+            mpp[nums[high]]++;
+            while (mpp[nums[high]] == 2) {
+                ans = abs(low - high);
+                if (ans <= k) return true;
+                mpp[nums[low]]--;
+                low++;
+            }
+            high++;
+        }
+        return false;
+    }
+};
+
 int main() {
   int n; 
   cin >> n;
