@@ -1,4 +1,6 @@
 #include<iostream>
+#include<map>
+
 using namespace std;
 
 vector<int> twoSum(vector<int>& nums, int target) {
@@ -567,31 +569,31 @@ class Solution {
         }
     };
 
-    class Solution {
-        public:
-            int lengthOfLongestSubstring(string s) {
-                map<int,int> mpp;
-                int high = 0;
-                int low = 0;
-                int res = INT_MIN;
-                int n = s.size();
-                
-                if(n == 0) {
-                    return 0;
-                }
-                while (high < n) {
-                    mpp[s[high]]++;
-                    while (mpp[s[high]] >= 2) {
-                        mpp[s[low]]--;
-                        low++;
-                    }
-                    int len = (high-low)+1;
-                    res = max(res, len);
-                    high++;
-                }
-                return res;
+class Solution {
+    public:
+        int lengthOfLongestSubstring(string s) {
+            map<int,int> mpp;
+            int high = 0;
+            int low = 0;
+            int res = INT_MIN;
+            int n = s.size();
+            
+            if(n == 0) {
+                return 0;
             }
-        };
+            while (high < n) {
+                mpp[s[high]]++;
+                while (mpp[s[high]] >= 2) {
+                    mpp[s[low]]--;
+                    low++;
+                }
+                int len = (high-low)+1;
+                res = max(res, len);
+                high++;
+            }
+            return res;
+        }
+    };
 
 };
 //76. Minimum Window Substring
@@ -726,6 +728,66 @@ public:
         }
         return ans;
     }
+// 525. Contiguous Array --> prefix
+class Solution {
+public:
+    int findMaxLength(vector<int>& nums) {
+        int n = nums.size();
+        int zero_cnt = 0;
+        int one_cnt = 0;
+        int res = 0;
+        map<int, int> mpp;
+        for (int i=0; i<n; i++) {
+            if (nums[i] == 0) {
+                zero_cnt++;
+            }
+            else one_cnt++;
+            int diff = one_cnt - zero_cnt;
+
+            if (diff == 0) {
+                res = max(res, i+1);
+            }
+            else if (mpp.find(diff) == mpp.end()) {
+                mpp[diff] = i;
+            }
+            else {
+                int index = mpp[diff];
+                res = max(res, (i - index));
+            }
+        }
+        return res;
+    }
+};
+
+// 56. Merge Intervals
+class Solution {
+public:
+    vector<vector<int>> merge(vector<vector<int>>& intervals) {
+        int n = intervals.size();
+        sort(intervals.begin(), intervals.end());
+        
+        int strt1 = intervals[0][0];
+        int end1 = intervals[0][1];
+        vector<vector<int>> res;
+        
+        for (int i=1; i<n; i++) {
+            int strt2 = intervals[i][0];
+            int end2 = intervals[i][1];
+
+            if (strt2 <= end1) { // merge
+                strt1 = strt1;
+                end1 = max(end1, end2);
+                continue;
+            }
+
+            res.push_back({strt1, end1});
+            strt1 = strt2;
+            end1 = end2;
+        }
+        res.push_back({strt1, end1});
+        return res;
+    }
+};
 
 };
 int main () {

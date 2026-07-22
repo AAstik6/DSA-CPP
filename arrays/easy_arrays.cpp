@@ -161,6 +161,26 @@ public:
     }
 };
 
+class Solution {
+public:
+    int pivotIndex(vector<int>& nums) {
+        int n = nums.size();
+        int sum = 0;
+        for (int i=0; i<=n-1; i++) {
+            sum+= nums[i];
+        }
+        int right = 0;
+        
+        int left = 0;
+        for (int i=0; i<=n-1; i++) {
+            right = sum - left - nums[i];
+            if (left == right) return i;
+            left+= nums[i];
+        }
+        return -1;
+    }
+};
+
 int main() {
   int n; 
   cin >> n;
