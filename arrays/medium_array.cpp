@@ -1,5 +1,8 @@
 #include<iostream>
 #include<map>
+#include<list>
+#include<unordered_set>
+#include<stack>
 
 using namespace std;
 
@@ -820,6 +823,34 @@ public:
         intervals.push_back(newInterval);
         sort(intervals.begin(), intervals.end());
         vector<vector<int>> res = merge(intervals);
+        return res;
+    }
+};
+
+// 3. Longest Substring Without Repeating Characters
+class Solution {
+public:
+    int lengthOfLongestSubstring(string s) {
+        int n = s.size();
+        if (n == 0) return 0;
+
+        map<int,int> mpp;
+        int high = 0;
+        int low = 0;
+        int len = 0;
+        int res = INT_MIN;
+
+        while (high < n) {
+            mpp[s[high]]++;
+
+            while (mpp[s[high]] == 2 || mpp[s[high]] > 1) {
+                mpp[s[low]]--;
+                low++;
+            }
+            len = (high-low)+1;
+            res = max(len, res);
+            high++;
+        }
         return res;
     }
 };

@@ -1,3 +1,5 @@
+include<iostrean>
+
 
     int NcR(int n, int r) {
         int res = 1;
