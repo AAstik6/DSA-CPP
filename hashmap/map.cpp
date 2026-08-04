@@ -29,3 +29,35 @@ public:
         return cnt;
     }
 };
+
+class Solution {
+public:
+    int compare(map<char,int> have, map<char,int> need) {
+        int res = INT_MAX;
+        for (auto i:need) {
+            char c = i.first;
+            int mpp_need = i.second;
+            int mpp_have = have[c];
+            int times = mpp_have/mpp_need;
+            res = min(res, times);
+        }
+        return res;
+    }
+    int maxNumberOfBalloons(string text) {
+        map<char, int> have;
+        map<char, int> need;
+        int m = text.size();
+
+        string s = "balloon";
+        int n = s.size();
+        for (int i=0; i<n; i++) {
+            need[s[i]]++;
+        }
+        for (int i=0; i<m; i++) {
+            have[text[i]]++;
+        }
+        int res = compare(have, need);
+        return res;
+    }
+
+};

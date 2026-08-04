@@ -369,3 +369,246 @@ int findPeakElement(vector<int>& nums) {
         return -1;
     }
 
+// 852. Peak Index in a Mountain Array
+class Solution {
+public:
+    int peakIndexInMountainArray(vector<int>& arr) {
+        int n = arr.size();
+        int low = 0;
+        int high = n-1;
+        int res = 0;
+
+        while (low<=high) {
+            int mid = (low+high)/2;
+            if (arr[mid] < arr[mid+1]) low = mid+1;
+            else {
+                res = mid;
+                high = mid-1;
+            }
+        }
+        return res;
+    }
+};
+
+// koko eating banana - 875.
+class Solution {
+public:
+    int Max_ele(vector<int>& piles) {
+        int n = piles.size();
+        int maxi = -1;
+        for(int i=0; i<=n-1; i++) {
+            maxi = max(maxi,piles[i]);
+        }
+        return maxi;
+    }
+
+    long long banana_eating_speed(vector<int>& piles, int mid) {
+        int n = piles.size();
+        long long total_hour = 0;
+        for (int i=0; i<=n-1; i++) {
+            total_hour += ceil(double(piles[i])/double(mid));
+        }
+        return total_hour;
+    }
+
+class Solution {
+public:
+    bool checking_speed(vector<int>& piles, int mid, int h) {
+        int n = piles.size();
+        long long hr = 0;
+        for (int i=0; i<n; i++) {
+            hr+= piles[i]/mid;
+            if (piles[i]%mid != 0) hr++;   
+        }
+        if (hr <= h) return true;
+        return false;
+    }
+
+    int minEatingSpeed(vector<int>& piles, int h) {
+        int n = piles.size();
+        int max_ele = INT_MIN;
+        for (int i=0; i<n; i++) {
+            max_ele = max(piles[i], max_ele);
+        }
+
+        int high = max_ele;
+        int low = 1;
+        int min_sp = INT_MAX;
+        
+        while (high>=low) {
+            int mid = (high+low)/2;
+            bool check = checking_speed(piles, mid, h);
+            if (check == true) {
+                min_sp = mid;
+                high = mid-1;
+            }
+            else low = mid+1;
+        }
+        return min_sp;
+    }
+};
+
+
+class Solution {
+public:
+    bool is_possible(vector<int>& bloomDay, int day, int k, int m) {
+        int n = bloomDay.size();
+        int cnt = 0;
+        int num_bags = 0;
+
+        for (int i=0; i<=n-1; i++) {
+            if (bloomDay[i] <= day) {
+                cnt++;
+            }
+            else {
+                num_bags += cnt/k;
+                cnt = 0;
+            }
+        }
+        num_bags += cnt/k;
+        if (num_bags >= m) return true;
+        else return false;
+    }
+    int min_val(vector<int>& bloomDay) {
+        int mini = INT_MAX;
+        int n = bloomDay.size();
+
+        for (int i=0; i<=n-1; i++) {
+            mini = min(mini, bloomDay[i]);
+        }
+        return mini;
+    }
+
+    int max_val(vector<int>& bloomDay) {
+        int n = bloomDay.size();
+        int maxi = INT_MIN;
+
+        for (int i=0; i<=n-1; i++) {
+            maxi = max(maxi, bloomDay[i]);
+        }
+        return maxi;
+    }
+
+    int minDays(vector<int>& bloomDay, long long m, long long k) {
+        long long n = bloomDay.size();
+        if (m*k > n) return -1;
+
+        int low = min_val(bloomDay);
+        int high = max_val(bloomDay);
+        int ans = -1;
+
+        while (low<=high) {
+            int mid = (low+high)/2;
+            if (is_possible(bloomDay, mid, k, m) == true) {
+                ans = mid;
+                high = mid-1;
+            }
+            else low = mid+1;
+        }
+        return ans;
+    }
+};
+
+// GFG - agressive cows.
+class Solution {
+  public:
+    bool check_dist(vector<int>& arr, int mid, int k) {
+        int n = arr.size();
+        int cow_cnt = k-1;
+        int diff = 0;
+        int pres_cow = arr[0];
+        for (int i=1; i<n; i++) {
+            diff = abs(arr[i] - pres_cow);
+            if (diff >= mid) {
+                cow_cnt--;
+                pres_cow = arr[i];
+            }
+        }
+        if (cow_cnt <= 0) return true;
+        return false;
+    }
+    
+    int aggressiveCows(vector<int> &arr, int k) {
+        // code here
+        sort(arr.begin(), arr.end());
+        int n = arr.size();
+        int mini = INT_MAX;
+        int maxi = INT_MIN;
+        int res = 0;
+        for (int i=0; i<n; i++) {
+            mini = min(mini, arr[i]);
+        }
+        for (int i=0; i<n; i++) {
+            maxi = max(maxi, arr[i]);
+        }
+        
+        int low = 0;
+        int high = maxi- mini;
+        
+        while (high>=low) {
+            int mid = (high+low)/2;
+            if (check_dist(arr, mid, k) == true) {
+                res = mid;
+                low = mid+1;
+            }
+            else high = mid-1;
+        }
+        return res;
+    }
+};
+
+class Solution {
+  public:
+    long long highest_ele(vector<int>& arr) {
+        long long total_pages = 0;
+        int n = arr.size();
+        for (int i=0; i<n; i++) {
+            total_pages+= arr[i];
+        }
+        return total_pages;
+    }
+    
+    int max_ele(vector<int>& arr) {
+        int max_val = INT_MIN;
+        int n = arr.size();
+        for (int i=0; i<n; i++) {
+            max_val = max(max_val, arr[i]);
+        }
+        return max_val;
+    }
+    
+    bool check_valid(vector<int>& arr, long long mid, int k) {
+        int num_stu = 1;
+        long long sum = 0;
+        int n = arr.size();
+        
+        for (int i=0; i<n; i++) {
+            sum+= arr[i];
+            if (sum > mid) {
+                num_stu++;
+                sum = arr[i];
+            }
+        }
+        if (num_stu > k) return false;
+        return true;
+    }
+    int findPages(vector<int> &arr, int k) {
+        // code here
+        int n = arr.size();
+        long long res = -1;
+        if (k > n) return -1;
+        long long low = max_ele(arr);
+        long long high = highest_ele(arr);
+        
+        while (high >= low) {
+            long long mid = (high + low)/2;
+            bool check = check_valid(arr, mid, k);
+            if (check == false) low = mid+1;
+            else {
+                res = mid;
+                high = mid-1;
+            }
+        }
+        return res;
+    }
+};
