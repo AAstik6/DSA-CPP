@@ -182,7 +182,7 @@ class Solution {
             }
         }
         return res;
-    }
+    } 
 
     // 1337. The K Weakest Rows in a Matrix
     vector<int> kWeakestRows(vector<vector<int>>& mat, int k) {
