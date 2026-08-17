@@ -181,6 +181,32 @@ public:
     }
 };
 
+// 392. Is Subsequence
+class Solution {
+public:
+    bool isSubsequence(string s, string t) {
+       int n = t.size();
+       int m = s.size();
+
+       int s_pointer = 0;
+       int t_pointer = 0;
+       int cnt = 0;
+       while (t_pointer < n) {
+        if (t[t_pointer] == s[s_pointer]) {
+            s_pointer++;
+            t_pointer++;
+            cnt++;
+        }
+        else if (t[t_pointer] != s[s_pointer]) {
+            t_pointer++;
+        }
+
+       }
+       if (cnt == m) return true;
+       else return false;
+    }
+};
+
 int main() {
   int n; 
   cin >> n;
