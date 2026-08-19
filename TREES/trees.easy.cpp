@@ -53,3 +53,22 @@ public:
         else return false;
     }
 };
+
+// 700. Search in a Binary Search Tree
+class Solution {
+public:
+    TreeNode* searchBST(TreeNode* root, int val) {
+        if (root == NULL) return NULL;
+        if (root->val == val) return root;
+        TreeNode* val_node = NULL;
+
+        if (root->val < val) {
+            val_node = searchBST(root->right, val);
+        }
+        else {
+            val_node = searchBST(root->left, val);
+        }
+        
+        return val_node;
+    }
+};
