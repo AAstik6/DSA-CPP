@@ -124,6 +124,7 @@ public:
     }
 };
 
+
 // 236. Lowest Common Ancestor of a Binary Tree.
 class Solution {
 public:
@@ -147,5 +148,58 @@ public:
         TreeNode* ans = NULL;
         check(root, p, q, ans);
         return ans;
+    }
+};
+
+// 653. Two Sum IV - Input is a BST
+class Solution {
+public:
+    TreeNode* getSmall(stack<TreeNode*>& asc) {
+        if (asc.empty()) return NULL;
+        TreeNode* small = asc.top();
+        asc.pop();
+        TreeNode* rightchild = small->right;
+        while (rightchild != NULL) {
+            asc.push(rightchild);
+            rightchild = rightchild->left;
+        }
+        return small;
+    }
+    TreeNode* getBig(stack<TreeNode*>& desc) {
+        if (desc.empty()) return NULL;
+        TreeNode* big = desc.top();
+        desc.pop();
+        TreeNode* leftchild = big->left;
+        while (leftchild != NULL) {
+            desc.push(leftchild);
+            leftchild = leftchild->right;
+        }
+        return big;
+    }
+    bool findTarget(TreeNode* root, int k) {
+        stack<TreeNode*> asc;
+        stack<TreeNode*> desc;
+
+        if (root == NULL) return false;
+        TreeNode* t = root;
+        while(t != NULL) {
+            asc.push(t);
+            t = t->left;
+        }
+        t = root;
+        while (t != NULL) {
+            desc.push(t);
+            t = t->right;
+        }
+
+        TreeNode* i = getSmall(asc);
+        TreeNode* j = getBig(desc);
+        while (i != NULL && j != NULL && i != j && i->val <= j->val) {
+            int sum = i->val + j->val;
+            if (sum == k) return true;
+            if (sum < k) i = getSmall(asc);
+            else if (sum > k) j = getBig(desc);
+        }
+        return false;
     }
 };
