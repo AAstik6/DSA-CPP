@@ -123,3 +123,29 @@ public:
         return ans;
     }
 };
+
+// 236. Lowest Common Ancestor of a Binary Tree.
+class Solution {
+public:
+    int check(TreeNode* root, TreeNode* p, TreeNode* q, TreeNode*& ans) {
+        if (root == NULL) return 0;
+        int left = check(root->left, p, q, ans);
+        int right = check(root->right, p, q, ans);
+
+        int self = 0;
+        if (root == p || root == q) {
+            self = 1;
+        }
+        int total = self + left + right;
+        if (total == 2 && ans == NULL) {
+            ans = root;
+        }
+        return total;
+    }
+
+    TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+        TreeNode* ans = NULL;
+        check(root, p, q, ans);
+        return ans;
+    }
+};
