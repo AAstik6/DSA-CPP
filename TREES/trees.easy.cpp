@@ -72,3 +72,40 @@ public:
         return val_node;
     }
 };
+
+// 112. Path Sum
+class Solution {
+public:
+    void adding_nodes(TreeNode* root, int sum, int targetSum, bool& res) {
+        if (root == NULL) return;
+        sum+= root->val;
+        if (root->left == NULL && root->right == NULL) {
+            if (sum == targetSum) res = true;
+        }
+        adding_nodes(root->left, sum, targetSum, res);
+        adding_nodes(root->right, sum, targetSum, res);
+        return;
+    }
+
+    bool hasPathSum(TreeNode* root, int targetSum) {
+        bool res = false;
+        int sum = 0;
+        adding_nodes(root, sum, targetSum, res);
+        return res;
+    }
+};
+// 100 same tree
+class Solution {
+public:
+    bool isSameTree(TreeNode* p, TreeNode* q) {
+        if(p == NULL && q == NULL) return true;
+        if (p == NULL || q == NULL) return false;
+        if (p ->val != q->val) return false;
+        
+        bool r1 = isSameTree(p->left, q->left);
+        bool r2 = isSameTree(p->right, q->right);
+
+        if (r1 == true && r2 == true) return true;
+        else return false;
+    }
+};

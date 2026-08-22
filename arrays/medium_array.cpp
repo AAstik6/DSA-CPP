@@ -882,6 +882,43 @@ public:
     }
 };
 
+// 424. Longest Repeating Character Replacement
+class Solution {
+public:
+    int max_cnt(vector<int>& arr) {
+        int max_ele = INT_MIN;
+        int n = arr.size();
+        for (int i=0; i<n; i++) {
+            max_ele = max(arr[i], max_ele);
+        }
+        return max_ele;
+    }
+    int characterReplacement(string s, int k) {
+        vector<int> arr(256, 0);
+        int high = 0;
+        int low = 0;
+        int n = s.size();
+        int res = INT_MIN;
+
+        while (high < n) {
+            arr[s[high]]++;
+            int len = (high - low)+1;
+            int maxi = max_cnt(arr);
+            int diff = len - maxi;
+            while (diff > k) {
+                arr[s[low]]--;
+                low++;
+                len = (high - low)+1;
+                maxi = max_cnt(arr);
+                diff = len - maxi;
+            }
+            res = max(len, res);
+            high++;
+        }
+        return res;
+    }
+};
+
 };
 int main () {
   int n; 

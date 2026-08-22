@@ -163,3 +163,26 @@ public:
         return next;
     }
 };
+
+
+// 2390. Removing Stars From a String
+class Solution {
+public:
+    string removeStars(string s) {
+        stack<char> st;
+        int n = s.size();
+
+        for (int i=0; i<n; i++) {
+            if (s[i] == '*') st.pop();
+            else st.push(s[i]);
+        }
+        string ans_string = "";
+        while(!st.empty()) {
+            char ele = st.top();
+            st.pop();
+            ans_string.push_back(ele);
+        }
+        reverse(ans_string.begin(), ans_string.end());
+        return ans_string;
+    }
+};

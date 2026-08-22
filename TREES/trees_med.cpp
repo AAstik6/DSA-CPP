@@ -151,6 +151,7 @@ public:
     }
 };
 
+
 // 653. Two Sum IV - Input is a BST
 class Solution {
 public:
@@ -201,5 +202,37 @@ public:
             else if (sum > k) j = getBig(desc);
         }
         return false;
+    }
+};
+
+// 230. Kth Smallest Element in a BST
+class Solution {
+public:
+    TreeNode* ans_node(TreeNode* root, int k) {
+        stack<TreeNode*> st;
+        int cnt = 0;
+        TreeNode* curr_node = root;
+
+        while (curr_node != NULL) {
+            st.push(curr_node);
+            curr_node = curr_node->left;
+        }
+        while (!st.empty()) {
+            TreeNode* small = st.top();
+            st.pop();
+            cnt++;
+            if (cnt == k) return small;
+            TreeNode* rightchild = small->right;
+            while (rightchild != NULL) {
+                st.push(rightchild);
+                rightchild = rightchild->left;
+            }
+        }
+        return NULL;
+    }
+    int kthSmallest(TreeNode* root, int k) {
+        TreeNode* kth_node = ans_node(root, k);
+        int ans = kth_node->val;
+        return ans;
     }
 };
