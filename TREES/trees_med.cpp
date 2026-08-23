@@ -237,7 +237,7 @@ public:
     }
 };
 
-// 
+// 129. Sum Root to Leaf Numbers
 class Solution {
 public:
     void leafSum(TreeNode* root, int sum, vector<int>& temp) {
@@ -264,5 +264,54 @@ public:
             ans_sum+= temp[i];
         }
         return ans_sum;
+    }
+};
+
+// 958. Check Completeness of a Binary Tree
+class Solution {
+public:
+    bool isCompleteTree(TreeNode* root) {
+        bool nullFound = false;
+        queue<TreeNode*> q;
+        q.push(root);
+        while(!q.empty()) {
+            TreeNode* t = q.front();
+            q.pop();
+            if (t == NULL) nullFound = true;
+            else {
+                if (nullFound == true) return false;
+                q.push(t->left);
+                q.push(t->right);
+            }
+        }
+        return true; 
+    }
+};
+
+// 113. Path Sum II
+class Solution {
+public:
+    void FindSum(TreeNode* root, int sum, int targetSum, vector<int>& temp, vector<vector<int>>& res) {
+        if (root == NULL) return;
+        sum+= root->val;
+        temp.push_back(root->val);
+        if(root->left == NULL && root->right == NULL) {
+            if (targetSum == sum) {
+                res.push_back(temp);
+                temp.pop_back();
+                return;
+            }
+        }
+        FindSum(root->left, sum, targetSum, temp, res);
+        FindSum(root->right, sum, targetSum, temp, res);
+        temp.pop_back();
+        return;
+    }
+    vector<vector<int>> pathSum(TreeNode* root, int targetSum) {
+        int sum = 0;
+        vector<int> temp;
+        vector<vector<int>> res;
+        FindSum(root, sum, targetSum, temp, res);
+        return res;
     }
 };

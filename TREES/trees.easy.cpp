@@ -109,3 +109,38 @@ public:
         else return false;
     }
 };
+
+// 104. Maximum Depth of Binary Tree
+class Solution {
+public:
+    int max_depth(TreeNode* root) {
+        if (root == NULL) return 0;
+        int left = max_depth(root->left);
+        int right = max_depth(root->right);
+
+        return 1 + max(left,right);
+    }
+    int maxDepth(TreeNode* root) {
+        int maxHeight = max_depth(root);
+        return maxHeight;
+    }
+};
+
+// 110. Balanced Binary Tree
+class Solution {
+public:
+    int checkValid(TreeNode* root, bool& check) {
+        if (root == NULL) return 0;
+        int left = checkValid(root->left, check);
+        int right = checkValid(root->right, check);
+
+        if (abs(left - right) > 1) check = false;
+        return 1 + max(left,right);
+    }
+    
+    bool isBalanced(TreeNode* root) {
+        bool check = true;
+        checkValid(root, check);
+        return check;
+    }
+};
