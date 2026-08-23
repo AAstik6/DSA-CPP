@@ -236,3 +236,33 @@ public:
         return ans;
     }
 };
+
+// 
+class Solution {
+public:
+    void leafSum(TreeNode* root, int sum, vector<int>& temp) {
+        if (root == NULL) return;
+        if (root->left == NULL && root->right == NULL) {
+            sum = (sum*10)+root->val;
+            temp.push_back(sum);
+            sum = root->val;
+            return;
+        }
+
+        sum = sum*10+root->val;
+        leafSum(root->left, sum, temp);
+        leafSum(root->right, sum, temp);
+    }
+    int sumNumbers(TreeNode* root) {
+        vector<int> temp;
+        int sum = 0;
+        leafSum(root, sum, temp);
+
+        int ans_sum = 0;
+        int n = temp.size();
+        for (int i=0; i<n; i++) {
+            ans_sum+= temp[i];
+        }
+        return ans_sum;
+    }
+};
