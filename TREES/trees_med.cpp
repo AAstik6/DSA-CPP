@@ -384,3 +384,29 @@ public:
         return;
     }
 };
+
+// 105. Construct Binary Tree from Preorder and Inorder Traversal
+class Solution {
+public:
+    TreeNode* makeTree(vector<int>& preorder, int low, int high, map<int,int>& in_index, int& indx) {
+        if (low > high) return NULL;
+        TreeNode* node = new TreeNode(preorder[indx]);
+        indx++;
+        int id = in_index[node->val];
+        node->left = makeTree(preorder, low, id-1, in_index, indx);
+        node->right = makeTree(preorder, id+1, high, in_index, indx);
+        return node;
+    }
+
+    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+        map<int,int> in_indx;
+        int n = inorder.size();
+        for (int i=0; i<n; i++) {
+            in_indx[inorder[i]] = i;
+        }
+        int low = 0;
+        int high = n-1;
+        int indx = 0;
+        return makeTree(preorder, low, high, in_indx, indx);
+    }
+};
