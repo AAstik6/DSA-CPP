@@ -315,3 +315,72 @@ public:
         return res;
     }
 };
+
+// 98. Validate Binary Search Tree
+class Solution {
+public:
+    void checkValid(TreeNode* root, bool& check, TreeNode*& prev) {
+        if (root == NULL) return;
+        checkValid(root->left, check, prev);
+        if (prev == NULL) prev = root;
+        else {
+            if (root->val <= prev->val) {
+                check = false;
+            }
+            prev = root;
+        }
+        checkValid(root->right, check, prev);
+        return;
+    }
+    bool isValidBST(TreeNode* root) {
+        bool check = true;
+        TreeNode* prev = NULL;
+        checkValid(root, check, prev);
+        return check;
+    }
+};
+
+// 99. Recover Binary Search Tree
+class Solution {
+public:
+    void checkBST(TreeNode* root, TreeNode*& first_wr_1st, TreeNode*& first_wr_2nd, TreeNode*& second_wr_1st,
+                TreeNode*& second_wr_2nd, TreeNode*& prev, int& wrg_cnt) {
+
+        if (root == NULL) return;
+        checkBST(root->left, first_wr_1st, first_wr_2nd, second_wr_1st, second_wr_2nd, prev, wrg_cnt);
+        if (prev == NULL) prev = root;
+        else {
+            if (root->val <= prev->val && wrg_cnt == 0) {
+                wrg_cnt++;
+                first_wr_1st = prev;
+                first_wr_2nd = root;
+            }
+            else if (root->val <= prev->val && wrg_cnt == 1) {
+                wrg_cnt++;
+                second_wr_1st = prev;
+                second_wr_2nd = root;
+            }
+            prev = root;
+        }
+        checkBST(root->right, first_wr_1st, first_wr_2nd, second_wr_1st, second_wr_2nd, prev, wrg_cnt);
+        return;
+    }
+
+    void recoverTree(TreeNode* root) {
+        int wrg_cnt = 0;
+        TreeNode* prev = NULL;
+
+        TreeNode* first_wr_1st = NULL;
+        TreeNode* first_wr_2nd = NULL;
+
+        TreeNode* second_wr_1st = NULL;
+        TreeNode* second_wr_2nd = NULL;
+
+        checkBST(root, first_wr_1st, first_wr_2nd, second_wr_1st, second_wr_2nd, prev, wrg_cnt);
+        if (wrg_cnt == 1) {
+            swap(first_wr_1st->val, first_wr_2nd->val);
+        }
+        else swap(first_wr_1st->val, second_wr_2nd->val);
+        return;
+    }
+};
