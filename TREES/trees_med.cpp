@@ -125,28 +125,31 @@ public:
 };
 
 
-// 236. Lowest Common Ancestor of a Binary Tree.
+// 235. Lowest Common Ancestor of a Binary Search Tree
 class Solution {
 public:
-    int check(TreeNode* root, TreeNode* p, TreeNode* q, TreeNode*& ans) {
-        if (root == NULL) return 0;
-        int left = check(root->left, p, q, ans);
-        int right = check(root->right, p, q, ans);
-
-        int self = 0;
+    void checkLCA(TreeNode* root, TreeNode* p, TreeNode* q, TreeNode*& ans) {
+        if (root == NULL) return;
         if (root == p || root == q) {
-            self = 1;
-        }
-        int total = self + left + right;
-        if (total == 2 && ans == NULL) {
             ans = root;
+            return;
         }
-        return total;
+        if (root->val < p->val) {
+            checkLCA(root->right, p, q, ans);
+        }
+        else if (root->val > q->val) {
+            checkLCA(root->left, p, q, ans);
+        }
+        else {
+            ans = root;
+            return;
+        }
     }
 
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
         TreeNode* ans = NULL;
-        check(root, p, q, ans);
+        if (p->val < q->val) checkLCA(root, p, q, ans);
+        else checkLCA(root, q, p, ans);
         return ans;
     }
 };
