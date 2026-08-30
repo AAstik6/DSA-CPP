@@ -165,7 +165,7 @@ class Solution {
     }
     bool isCycle(int V, vector<vector<int>>& edges) {
         // Code here
-        
+
         // adj_list
         vector<vector<int>> adj_list(V);
         for (int i=0; i<edges.size(); i++) {
@@ -187,5 +187,47 @@ class Solution {
         }
         
         return cycle;
+    }
+};
+
+// Undirected Graph Cycle
+class Solution {
+  public:
+    void DFS(int vertex, vector<bool>& visited, vector<bool>& path,
+            vector<vector<int>>& adj_list, bool& cycle) {
+        
+        visited[vertex] = true;
+        path[vertex] = true;
+        
+        for (int i=0; i<adj_list[vertex].size(); i++) {
+            int neigh = adj_list[vertex][i];
+            if (visited[neigh] == true && path[neigh] == true) cycle = true;
+            else if (visited[neigh] == false) DFS(neigh, visited, path, adj_list, cycle);
+        }
+        path[vertex] = false;
+        return;
+    }
+    bool isCyclic(int V, vector<vector<int>> &edges) {
+        // code here
+        vector<vector<int>> adj_list(V);
+        for (int i=0 ; i<edges.size(); i++) {
+            vector<int> edge = edges[i];
+            int source = edge[0];
+            int destination = edge[1];
+            adj_list[source].push_back(destination);
+        }
+        
+        int n = adj_list.size();
+        vector<bool> visited(V, false);
+        vector<bool> path(V, false);
+        
+        bool cycle = false;
+        for (int i=0; i<n; i++) {
+            if (visited[i] == false && path[i] == false) {
+                DFS(i, visited, path, adj_list, cycle);
+            }
+        }
+        return cycle;
+        
     }
 };
