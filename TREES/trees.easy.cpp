@@ -144,3 +144,60 @@ public:
         return check;
     }
 };
+
+
+// two sum in BST -- 653
+class Solution {
+public:
+    TreeNode* getSmall(TreeNode*& root, stack<TreeNode*>& asc) {
+        TreeNode* small_node = asc.top();
+        asc.pop();
+        TreeNode* right_child = small_node->right;
+        while (right_child != NULL) {
+            asc.push(right_child);
+            right_child = right_child->left;
+        }
+        return small_node;
+    }
+
+    TreeNode* getBig(TreeNode*& root, stack<TreeNode*>& desc) {
+        TreeNode* big_node = desc.top();
+        desc.pop();
+        TreeNode* left_child = big_node->left;
+        while (left_child != NULL) {
+            desc.push(left_child);
+            left_child = left_child->right;
+        }
+        return big_node;
+    }
+
+    bool findTarget(TreeNode* root, int k) {
+        stack<TreeNode*> asc;
+        stack<TreeNode*> desc;
+
+        TreeNode* temp_node = root;
+        while (temp_node != NULL) {
+            asc.push(temp_node);
+            temp_node = temp_node->left;
+        }
+
+        temp_node = root;
+
+        while (temp_node != NULL) {
+            desc.push(temp_node);
+            temp_node = temp_node->right;
+        }
+
+        TreeNode* small_node = getSmall(root, asc);
+        TreeNode* big_node = getBig(root, desc);
+
+        while (small_node != NULL && big_node != NULL && small_node != big_node) {
+            int small_val = small_node->val;
+            int big_val = big_node->val;
+            if (small_val + big_val == k) return true;
+            else if (small_val + big_val > k) big_node = getBig(root, desc);
+            else if (small_val + big_val < k) small_node = getSmall(root, asc);
+        }
+        return false;
+    }
+};

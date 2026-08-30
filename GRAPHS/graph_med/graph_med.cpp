@@ -123,3 +123,69 @@ public:
         return min_time;
     }
 };
+
+// 547. number of provinces
+class Solution {
+public:
+    void DFS(int i, vector<vector<int>>& isConnected, vector<bool>& visited, int n) {
+        visited[i] = true;
+        for (int j = 0; j < n; j++) {
+            if (isConnected[i][j] == 1 && !visited[j]) {
+                DFS(j, isConnected, visited, n);
+            }
+        }
+    }
+    int findCircleNum(vector<vector<int>>& isConnected) {
+         int n = isConnected.size();
+        vector<bool> visited(n, false);
+        int res = 0;
+        for (int i = 0; i < n; i++) {
+            if (!visited[i]) {
+                DFS(i, isConnected, visited, n);
+                res++;
+            }
+        }
+        return res;
+    }
+};
+
+// GFG -- cycle in undirected graph
+class Solution {
+  public:
+    void DFS(vector<vector<int>>& adj_list, vector<bool>& visited,
+            int vertex, int parent, bool& cycle) {
+        
+        visited[vertex] = true;
+        for(int i=0; i<adj_list[vertex].size(); i++) {
+            int neigh = adj_list[vertex][i];
+            if (visited[neigh] == true && neigh != parent) cycle = true;
+            else if (visited[neigh] == false) DFS(adj_list, visited, neigh, vertex, cycle);
+        }
+        return;
+    }
+    bool isCycle(int V, vector<vector<int>>& edges) {
+        // Code here
+        
+        // adj_list
+        vector<vector<int>> adj_list(V);
+        for (int i=0; i<edges.size(); i++) {
+            vector<int> edge = edges[i];
+            int source = edge[0];
+            int destination = edge[1];
+            adj_list[source].push_back(destination);
+            adj_list[destination].push_back(source);
+        }
+        // visited list
+        int n = adj_list.size();
+        vector<bool> visited(n, false);
+        
+        bool cycle = false;
+        for (int i=0; i<n; i++) {
+            if (visited[i] == false) {
+                DFS(adj_list, visited, i, -1, cycle);
+            }
+        }
+        
+        return cycle;
+    }
+};
