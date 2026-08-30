@@ -243,25 +243,26 @@ public:
 // 129. Sum Root to Leaf Numbers
 class Solution {
 public:
-    void leafSum(TreeNode* root, int sum, vector<int>& temp) {
+    void findNum(TreeNode* root, vector<int>& temp, int sum) {
         if (root == NULL) return;
+
         if (root->left == NULL && root->right == NULL) {
             sum = (sum*10)+root->val;
             temp.push_back(sum);
-            sum = root->val;
-            return;
+            sum = 0;
         }
-
-        sum = sum*10+root->val;
-        leafSum(root->left, sum, temp);
-        leafSum(root->right, sum, temp);
+        
+        sum = (sum*10)+root->val;
+        findNum(root->left, temp, sum);
+        findNum(root->right, temp, sum);
+        return;
     }
     int sumNumbers(TreeNode* root) {
-        vector<int> temp;
         int sum = 0;
-        leafSum(root, sum, temp);
-
         int ans_sum = 0;
+        vector<int> temp;
+        findNum(root, temp, sum);
+
         int n = temp.size();
         for (int i=0; i<n; i++) {
             ans_sum+= temp[i];

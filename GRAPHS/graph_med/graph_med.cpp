@@ -30,7 +30,7 @@ public:
     }
     int numIslands(vector<vector<char>>& grid) {
         int res = 0;
-        int n = grid.size();
+        int n = grid.size( );
         int m = grid[0].size();
         vector<vector<bool>> visited(n);
         for (int i=0; i<n; i++) {
@@ -229,5 +229,50 @@ class Solution {
         }
         return cycle;
         
+    }
+};
+
+// Topological Sort - GFG
+class Solution {
+  public:
+    void BFS(vector<int>& res, vector<vector<int>>& adj_list,
+            vector<int>& inDegree, queue<int>& qu) {
+                
+        while (!qu.empty()) {
+            int vertex = qu.front();
+            res.push_back(vertex);
+            qu.pop();
+            for (int i=0; i<adj_list[vertex].size(); i++) {
+                int neigh = adj_list[vertex][i];
+                inDegree[neigh]--;
+                if (inDegree[neigh] == 0) {
+                    qu.push(neigh);
+                }
+            }
+        }
+        return;
+    }
+    vector<int> topoSort(int V, vector<vector<int>>& edges) {
+        // code here
+        vector<int> res;
+        vector<int> inDegree(V);
+        
+        // bulding the adj_list
+        vector<vector<int>> adj_list(V);
+        for (int i=0; i<edges.size(); i++) {
+            vector<int> edge = edges[i];
+            int source = edge[0];
+            int destination = edge[1];
+            adj_list[source].push_back(destination);
+            inDegree[destination]++;
+        }
+        
+        queue<int> qu;
+        int n = inDegree.size();
+        for (int i=0; i<n; i++) {
+            if (inDegree[i] == 0) qu.push(i);
+        }
+        BFS(res, adj_list, inDegree, qu);
+        return res;
     }
 };
