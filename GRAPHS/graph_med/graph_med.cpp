@@ -276,3 +276,33 @@ class Solution {
         return res;
     }
 };
+
+
+// 785. Is Graph Bipartite?
+class Solution {
+public:
+    void DFS_check(vector<vector<int>>& graph, vector<int>& color, int vertex, bool& res, int c) {
+        color[vertex] = c;
+        for (int i=0; i<graph[vertex].size(); i++) {
+            int neigh = graph[vertex][i];
+            if (color[neigh] != -1 && color[neigh] == c) res = false;
+            if (color[neigh] == -1) {
+                DFS_check(graph, color, neigh, res, 1-c);
+            }
+        }
+        return;
+    }
+    bool isBipartite(vector<vector<int>>& graph) {
+        int n = graph.size();
+        vector<int> color(n, -1);
+        bool res = true;
+        int c = 0;
+
+        for (int i=0; i<n; i++) {
+            if (color[i] == -1){
+                DFS_check(graph, color, i, res, c);
+            }
+        }
+        return res;
+    }
+};
