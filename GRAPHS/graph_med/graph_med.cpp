@@ -306,3 +306,57 @@ public:
         return res;
     }
 };
+
+
+// 130. Surrounded Regions
+class Solution {
+public:
+    bool isValid(int i, int j, int n, int m) {
+        if (i<0 || i>=n || j<0 || j>=m) {
+            return false;
+        }
+        return true;
+    }
+
+    void DFS(vector<vector<char>>& board, vector<int>& x_axis, vector<int>& y_axis, int i, int j, int n, int m) {
+        board[i][j] = '#';
+        for (int k=0; k<4; k++) {
+            int row = i + x_axis[k];
+            int col = j + y_axis[k];
+            if (isValid(row, col, n, m) == true && board[row][col] != '#' && board[row][col] == 'O') {
+                DFS(board, x_axis, y_axis, row, col, n, m);
+            }
+        }
+        return;
+    }
+
+    void solve(vector<vector<char>>& board) {
+        vector<int> x_axis = {1 , -1, 0 , 0};
+        vector<int> y_axis = {0 , 0 , 1 , -1};
+
+        int n = board.size();
+        int m = board[0].size();
+
+        for (int i=0; i<n; i++) {
+            for (int j=0; j<m; j++) {
+                if (board[i][j] == 'O') {
+                    for (int k=0; k<4; k++) {
+                        int row = i + x_axis[k];
+                        int col = j + y_axis[k];
+                        if (row<0 || row>=n || col<0 || col>=m) {
+                            DFS(board, x_axis, y_axis, i, j, n, m);
+                        }
+                    }
+                }
+            }
+        }
+        
+        for (int i=0; i<n; i++) {
+            for (int j=0; j<m; j++) {
+                if (board[i][j] == 'O') board[i][j] = 'X';
+                else if (board[i][j] == '#') board[i][j] = 'O';
+            }
+        }
+        return;
+    }
+};

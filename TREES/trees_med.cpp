@@ -275,20 +275,21 @@ public:
 class Solution {
 public:
     bool isCompleteTree(TreeNode* root) {
+        queue<TreeNode*> qu;
+        qu.push(root);
         bool nullFound = false;
-        queue<TreeNode*> q;
-        q.push(root);
-        while(!q.empty()) {
-            TreeNode* t = q.front();
-            q.pop();
-            if (t == NULL) nullFound = true;
+
+        while(!qu.empty()) {
+            TreeNode* node = qu.front();
+            qu.pop();
+            if (node == NULL) nullFound = true;
             else {
-                if (nullFound == true) return false;
-                q.push(t->left);
-                q.push(t->right);
+                if (node != NULL && nullFound == true) return false;
+                qu.push(node->left);
+                qu.push(node->right);
             }
         }
-        return true; 
+        return true;
     }
 };
 
