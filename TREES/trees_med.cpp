@@ -327,24 +327,25 @@ public:
 // 98. Validate Binary Search Tree
 class Solution {
 public:
-    void checkValid(TreeNode* root, bool& check, TreeNode*& prev) {
+    void check(TreeNode*& root, TreeNode*& prev, bool& ans) {
         if (root == NULL) return;
-        checkValid(root->left, check, prev);
-        if (prev == NULL) prev = root;
-        else {
-            if (root->val <= prev->val) {
-                check = false;
-            }
+        check(root->left, prev, ans);
+        if (prev == NULL) {
             prev = root;
         }
-        checkValid(root->right, check, prev);
+        else if (root->val <= prev->val) {
+            ans = false;
+        }
+        prev = root;
+        check(root->right, prev, ans);
         return;
     }
+
     bool isValidBST(TreeNode* root) {
-        bool check = true;
         TreeNode* prev = NULL;
-        checkValid(root, check, prev);
-        return check;
+        bool ans = true;
+        check(root, prev, ans);
+        return ans;
     }
 };
 

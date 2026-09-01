@@ -360,3 +360,50 @@ public:
         return;
     }
 };
+
+// Shortest Path in Unweighted Graph -- GFG.
+class Solution {
+  public:
+    int shortestPath(int V, vector<vector<int>> &edges, int src, int dest) {
+        // code here
+        vector<vector<int>> adj_list(V);
+        
+        for (int i=0; i<edges.size(); i++) {
+            vector<int> edge = edges[i];
+            int source = edge[0];
+            int destination = edge[1];
+            adj_list[source].push_back(destination);
+            adj_list[destination].push_back(source);
+        }
+        
+        vector<bool> visited(V, false);
+        vector<int> ans(V,-1);
+        int distance = 0;
+        
+        queue<pair<int,int>> qu;
+        qu.push({src,distance});
+        visited[src] = true;
+        
+        while(!qu.empty()) {
+            pair<int,int> p = qu.front();
+            qu.pop();
+            int vertex = p.first;
+            int dist = p.second;
+            ans[vertex] = dist;
+            
+            for (int i=0; i<adj_list[vertex].size(); i++) {
+                int neigh = adj_list[vertex][i];
+                if (visited[neigh] == false) {
+                    qu.push({neigh, dist+1});
+                    visited[neigh] = true;
+                }
+            }
+        }
+        
+        int res = 0;
+        for (int i=0; i<ans.size(); i++) {
+            res = ans[dest];
+        }
+        return res;
+    }
+};
