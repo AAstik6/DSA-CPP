@@ -407,3 +407,59 @@ class Solution {
         return res;
     }
 };
+
+
+// Dijkstra's algorithm -- GFG
+class Solution {
+  public:
+    struct cmp {
+        bool operator () (pair<int,int>& a, pair<int,int>& b) {
+            if (a.first != b.first) {
+                return a.first > b.first;
+            }
+            else {
+                return a.second > b.second;
+            }
+        }
+    };
+    vector<int> dijkstra(int V, vector<vector<int>> &edges, int src) {
+        // Code here
+        
+        // adj_list for weighted graph
+        vector<vector<pair<int, int>>> adj_list(V);
+        for (int i=0; i<edges.size(); i++) {
+            vector<int> wt_edge = edges[i];
+            int source = wt_edge[0];
+            int destination = wt_edge[1];
+            int weight = wt_edge[2];
+            
+            adj_list[source].push_back({destination,weight});
+            adj_list[destination].push_back({source, weight});
+        }
+        
+        priority_queue<pair<int,int>, vector<pair<int,int>>, cmp> pq; // min_heap.
+        vector<int> distance(V, INT_MAX);
+        distance[src] = 0;
+        pq.push({distance[src], src});
+        
+        while (!pq.empty()) {
+            pair<int,int> p;
+            p = pq.top();
+            pq.pop();
+            int dist = p.first;
+            int vertex = p.second;
+            
+            if (dist > distance[vertex]) continue;
+            
+            for (int j=0; j<adj_list[vertex].size(); j++) {
+                int neigh = adj_list[vertex][j].first;
+                int weight = adj_list[vertex][j].second;
+                if (dist+weight < distance[neigh]) {
+                    distance[neigh] = dist+weight;
+                    pq.push({dist+weight,neigh});
+                }
+            }
+        }
+        return distance;
+    }
+};
