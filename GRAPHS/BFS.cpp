@@ -1,3 +1,8 @@
+#include <iostream>
+#include<vector>
+using namespace std;
+
+
 class Solution {
   public:
     vector<int> bfs(vector<vector<int>> &adj) {
@@ -7,10 +12,10 @@ class Solution {
         vector<bool> visited(n,false);
         vector<int> res;
         queue<int> qu;
-        
+
         qu.push(vertex);
         visited[0] = true;
-        
+
         while (!qu.empty()) {
             int t = qu.front();
             res.push_back(t);
