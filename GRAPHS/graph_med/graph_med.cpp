@@ -1,5 +1,6 @@
 #include<iostream>
 #include<vector>
+#include<map>
 using namespace std;
 
 
@@ -211,43 +212,36 @@ class Solution {
 // Topological Sort - GFG
 class Solution {
   public:
-    void BFS(vector<int>& res, vector<vector<int>>& adj_list,
-            vector<int>& inDegree, queue<int>& qu) {
-
-        while (!qu.empty()) {
-            int vertex = qu.front();
-            res.push_back(vertex);
-            qu.pop();
-            for (int i=0; i<adj_list[vertex].size(); i++) {
-                int neigh = adj_list[vertex][i];
-                inDegree[neigh]--;
-                if (inDegree[neigh] == 0) {
-                    qu.push(neigh);
-                }
-            }
-        }
-        return;
-    }
     vector<int> topoSort(int V, vector<vector<int>>& edges) {
         // code here
-        vector<int> res;
-        vector<int> inDegree(V);
-        // bulding the adj_list
         vector<vector<int>> adj_list(V);
+        vector<int> in_degree(V, 0);
+        vector<int> res;
+
         for (int i=0; i<edges.size(); i++) {
             vector<int> edge = edges[i];
-            int source = edge[0];
-            int destination = edge[1];
-            adj_list[source].push_back(destination);
-            inDegree[destination]++;
+            int src = edge[0];
+            int dest = edge[1];
+
+            adj_list[src].push_back(dest);
+            in_degree[dest]++;
+        }
+        queue<int> qu;
+        for (int i=0; i<in_degree.size(); i++) {
+            if (in_degree[i] == 0) qu.push(i);
         }
 
-        queue<int> qu;
-        int n = inDegree.size();
-        for (int i=0; i<n; i++) {
-            if (inDegree[i] == 0) qu.push(i);
+        while(!qu.empty()) {
+            int vertex = qu.front();
+            qu.pop();
+            res.push_back(vertex);
+
+            for (int j=0; j<adj_list[vertex].size(); j++) {
+                int neigh = adj_list[vertex][j];
+                in_degree[neigh]--;
+                if (in_degree[neigh] == 0) qu.push(neigh);
+            }
         }
-        BFS(res, adj_list, inDegree, qu);
         return res;
     }
 };
@@ -286,10 +280,8 @@ public:
 // 130. Surrounded Regions
 class Solution {
 public:
-    bool isValid(int i, int j, int n, int m) {
-        if (i<0 || i>=n || j<0 || j>=m) {
-            return false;
-        }
+    bool isValid(int row, int col, int n, int m) {
+        if (row>=n || row<0 || col>=m || col<0) return false;
         return true;
     }
 
@@ -298,12 +290,50 @@ public:
         for (int k=0; k<4; k++) {
             int row = i + x_axis[k];
             int col = j + y_axis[k];
-            if (isValid(row, col, n, m) == true && board[row][col] != '#' && board[row][col] == 'O') {
+
+            if (isValid(row, col, n, m) == true && board[row][col] == 'O') {
                 DFS(board, x_axis, y_axis, row, col, n, m);
             }
         }
-        return;
     }
+    void solve(vector<vector<char>>& board) {
+        int n = board.size();
+        int m = board[0].size();
+
+        vector<int> x_axis = {1 , -1 , 0 , 0};
+        vector<int> y_axis = {0 , 0 , 1 , -1};
+
+        // looping through the edges of the board:
+        for (int i=0; i<n; i++) {
+            if (board[i][0] == 'O') {
+                DFS(board, x_axis, y_axis, i, 0, n, m);
+            }
+        }
+        for (int i=0; i<n; i++) {
+            if (board[i][m-1] == 'O') {
+                DFS(board, x_axis, y_axis, i, m-1, n, m);
+            }
+        }
+        for (int j=0; j<m; j++) {
+            if (board[0][j] == 'O') {
+                DFS(board, x_axis, y_axis, 0, j, n, m);
+            }
+        }
+        for (int j=0; j<m; j++) {
+            if (board[n-1][j] == 'O') {
+                DFS(board, x_axis, y_axis, n-1, j, n, m);
+            }
+        }
+
+        // looping through the board matrix
+        for (int i=0; i<n; i++) {
+            for (int j=0; j<m; j++) {
+                if(board[i][j] == 'O') board[i][j] = 'X';
+                if (board[i][j] == '#') board[i][j] = 'O';
+            }
+        }
+    }
+};
 
     void solve(vector<vector<char>>& board) {
         vector<int> x_axis = {1 , -1, 0 , 0};
@@ -733,5 +763,168 @@ public:
         }
         int min_time = time_track[n-1][m-1];
         return min_time;
+    }
+};
+
+// HARD -- 778. Swim in Rising Water
+class Solution {
+public:
+    bool isValid(int row, int col, int n, int m) {
+        if (row<0 || row>=n || col<0 || col>=m) return false;
+        return true;
+    }
+
+    int swimInWater(vector<vector<int>>& grid) {
+        int max_ele = INT_MIN;
+        int min_ele = grid[0][0];
+        for (int i=0; i<grid.size(); i++) {
+            for (int j=0; j<grid[0].size(); j++) {
+                max_ele = max(grid[i][j] , max_ele);
+            }
+        }
+
+        int n = grid.size();
+        int m = grid[0].size();
+
+        int low = min_ele;
+        int high = max_ele;
+
+        vector<int> x_axis = {1 , -1 , 0 , 0};
+        vector<int> y_axis = {0 , 0 , 1 , -1};
+
+        queue<pair<int,int>> qu;
+
+        int ans = 0;
+
+        while (low <= high) {
+            int mid = (low+high)/2;
+            vector<vector<bool>> visited(n, vector<bool>(m, false));
+
+            if (grid[0][0] <= mid) {
+                qu.push({0,0});
+                visited[0][0] = true;
+            }
+
+            while (!qu.empty()) {
+                pair<int,int> p;
+                p = qu.front();
+                qu.pop();
+                int row = p.first;
+                int col = p.second;
+                for (int k=0; k<4; k++) {
+                    int r = row + x_axis[k];
+                    int c = col + y_axis[k];
+                    if (isValid(r,c,n,m) == true && grid[r][c] <= mid && visited[r][c] == false) {
+                        visited[r][c] = true;
+                        qu.push({r,c});
+                    }
+                }
+            }
+            if (visited[n-1][m-1] == true) {
+                ans = mid;
+                high = mid-1;
+            }
+            else {
+                low = mid+1;
+            }
+        }
+        return ans;
+    }
+};
+
+// Minimum Spanning Tree GFG.
+class Solution {
+  public:
+    struct cmp {
+       bool operator () (pair<int,int>& a, pair<int,int>& b) {
+           if (a.first != b.first) {
+               return a.first > b.first;
+           }
+           else {
+               return a.second > b.second;
+           }
+       }
+   };
+    int spanningTree(int V, vector<vector<int>>& edges) {
+        // code here
+        vector<vector<pair<int,int>>> adj_list(V);
+        for (int i=0; i<edges.size(); i++) {
+            vector<int> edge = edges[i];
+            int src = edge[0];
+            int dest = edge[1];
+            int weight = edge[2];
+
+            adj_list[src].push_back({dest,weight});
+            adj_list[dest].push_back({src,weight});
+        }
+        priority_queue<pair<int,int>, vector<pair<int,int>>, cmp> pq; // min_heap.
+        vector<bool> visited(V, false);
+        pq.push({0,0});
+
+        int total_wt = 0;
+
+        while (!pq.empty()) {
+            pair<int,int> p;
+            p = pq.top();
+            pq.pop();
+
+            int wt = p.first;
+            int vertex = p.second;
+            if (visited[vertex] == true) continue;
+            visited[vertex] = true;
+
+            total_wt+= wt;
+
+            for (int j=0; j<adj_list[vertex].size(); j++) {
+                int neigh = adj_list[vertex][j].first;
+                int edge_wt = adj_list[vertex][j].second;
+                if (visited[neigh] == false) pq.push({edge_wt, neigh});
+            }
+        }
+        return total_wt;
+    }
+};
+
+
+// 127. Word Ladder
+class Solution {
+public:
+    int ladderLength(string beginWord, string endWord, vector<string>& wordList) {
+        map<string,int> mpp;
+
+        for (int i=0; i<wordList.size(); i++) {
+            mpp[wordList[i]] = 1;
+        }
+        if (mpp.find(beginWord) == mpp.end()) {
+            mpp[beginWord] = 1;
+        }
+        if(mpp.find(endWord) == mpp.end()) return 0;
+
+        queue<pair<string,int>> qu;
+        qu.push({beginWord,0});
+
+        while (!qu.empty()) {
+            pair<string,int> p;
+            p = qu.front();
+            qu.pop();
+            string s = p.first;
+            int cnt = p.second;
+
+            if (s == endWord) return cnt;
+
+            for (int i=0; i<s.size(); i++) {
+                char c = s[i];
+                for (int j=97; j<=122; j++) {
+                    if (j == c) continue;
+                    s[i] = j;
+                    if (mpp.find(s) != mpp.end()) {
+                        qu.push({s,cnt++});
+                        mpp.erase(s);
+                    }
+                }
+                s[i] = c;
+            }
+        }
+        return 0;
     }
 };

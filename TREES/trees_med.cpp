@@ -357,46 +357,59 @@ public:
 
 
 // 99. Recover Binary Search Tree
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
 class Solution {
 public:
-    void checkBST(TreeNode* root, TreeNode*& first_wr_1st, TreeNode*& first_wr_2nd, TreeNode*& second_wr_1st,
-                TreeNode*& second_wr_2nd, TreeNode*& prev, int& wrg_cnt) {
-
+    void check(TreeNode*& root, TreeNode*& prev, TreeNode*& changeNode1, TreeNode*& changeNode2, TreeNode*& changeNode3, TreeNode*& changeNode4, int& chng_cnt) {
         if (root == NULL) return;
-        checkBST(root->left, first_wr_1st, first_wr_2nd, second_wr_1st, second_wr_2nd, prev, wrg_cnt);
+
+        check(root->left,prev,changeNode1,changeNode2,changeNode3,changeNode4, chng_cnt);
+        
         if (prev == NULL) prev = root;
-        else {
-            if (root->val <= prev->val && wrg_cnt == 0) {
-                wrg_cnt++;
-                first_wr_1st = prev;
-                first_wr_2nd = root;
-            }
-            else if (root->val <= prev->val && wrg_cnt == 1) {
-                wrg_cnt++;
-                second_wr_1st = prev;
-                second_wr_2nd = root;
-            }
-            prev = root;
+        else if (root->val <= prev->val && chng_cnt == 0) {
+            chng_cnt++;
+            changeNode1 = prev;
+            changeNode2 = root;
         }
-        checkBST(root->right, first_wr_1st, first_wr_2nd, second_wr_1st, second_wr_2nd, prev, wrg_cnt);
+        else if (root->val <= prev->val && chng_cnt == 1) {
+            chng_cnt++;
+            changeNode3 = prev;
+            changeNode4 = root;
+        }
+        prev = root;
+        check(root->right,prev,changeNode1,changeNode2,changeNode3,changeNode4, chng_cnt);
         return;
     }
-
     void recoverTree(TreeNode* root) {
-        int wrg_cnt = 0;
+        int chng_cnt = 0;
+
         TreeNode* prev = NULL;
 
-        TreeNode* first_wr_1st = NULL;
-        TreeNode* first_wr_2nd = NULL;
+        TreeNode* changeNode1 = NULL;
+        TreeNode* changeNode2 = NULL;
 
-        TreeNode* second_wr_1st = NULL;
-        TreeNode* second_wr_2nd = NULL;
+        TreeNode* changeNode3 = NULL;
+        TreeNode* changeNode4 = NULL;
 
-        checkBST(root, first_wr_1st, first_wr_2nd, second_wr_1st, second_wr_2nd, prev, wrg_cnt);
-        if (wrg_cnt == 1) {
-            swap(first_wr_1st->val, first_wr_2nd->val);
+        check(root,prev,changeNode1,changeNode2,changeNode3,changeNode4, chng_cnt);
+
+        if (chng_cnt == 1) {
+            swap(changeNode1->val,changeNode2->val);
         }
-        else swap(first_wr_1st->val, second_wr_2nd->val);
+        else if (chng_cnt == 2) {
+            swap(changeNode1->val,changeNode4->val);
+        }
+
         return;
     }
 };
