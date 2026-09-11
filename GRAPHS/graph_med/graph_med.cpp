@@ -928,3 +928,73 @@ public:
         return 0;
     }
 };
+
+
+// 1020. Number of Enclaves.
+class Solution {
+public:
+    bool checkBorder(int i, int j, int n, int m, vector<int>& x_axis, vector<int>& y_axis) {
+        for (int k=0; k<4; k++) {
+            int row = i + x_axis[k];
+            int col = j + y_axis[k];
+
+            if (row<0 || row>=n || col<0 || col>=m) return false;
+        }
+        return true;
+    }
+
+    bool isValid(int row, int col, int n, int m) {
+        if (row<0 || row>=n || col<0 || col>=m) return false;
+        return true;
+    }
+    
+    void DFS(int i, int j, vector<vector<int>>& grid, vector<int>& x_axis, vector<int>& y_axis, vector<vector<bool>>& visited, int n, int m, int& cnt, bool& touchesBorder) {
+        visited[i][j] = true;
+        cnt++;
+        for (int k=0; k<4; k++) {
+            int row = i + x_axis[k];
+            int col = j + y_axis[k];
+
+            if (isValid(row,col,n,m) == true && checkBorder(row,col,n,m,x_axis,y_axis) == false && grid[row][col] == 1 && visited[row][col] == false) {
+                touchesBorder = true;
+            }
+        }
+        for (int k=0; k<4; k++) {
+            int row = i + x_axis[k];
+            int col = j + y_axis[k];
+
+            if (isValid(row,col,n,m) == true && grid[row][col] == 1 && visited[row][col] == false) {
+                DFS(row,col,grid,x_axis,y_axis,visited,n,m,cnt,touchesBorder);
+            }
+        }
+        return;
+    }
+
+    int numEnclaves(vector<vector<int>>& grid) {
+        int n = grid.size();
+        int m = grid[0].size();
+
+        vector<vector<bool>> visited(n);
+        for (int i=0; i<n; i++) {
+            vector<bool> t(m, false);
+            visited[i] = t;
+        }
+
+        vector<int> x_axis = {1 , -1 , 0 , 0};
+        vector<int> y_axis = {0 , 0 , 1 , -1};
+
+        int ans = 0;
+
+        for (int i=0; i<n; i++) {
+            for (int j=0; j<m; j++) {
+                if (grid[i][j] == 1 && checkBorder(i, j, n, m, x_axis, y_axis) == true && visited[i][j] == false) {
+                    int cnt = 0;
+                    bool touchesBorder = false;
+                    DFS(i,j,grid,x_axis,y_axis,visited,n,m,cnt,touchesBorder);
+                    if (touchesBorder == false) ans+= cnt;
+                }
+            }
+        }
+        return ans;
+    }
+};

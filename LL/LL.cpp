@@ -382,6 +382,32 @@ public:
     }
 };
 
+// 2181. Merge Nodes in Between Zeros 2nd code.
+class Solution {
+public:
+    ListNode* mergeNodes(ListNode* head) {
+
+        ListNode* temp = head->next;
+        ListNode* prev = head;
+
+        int sum = 0;
+
+        while (temp != NULL) {
+            while (temp->val != 0) {
+                sum+= temp->val;
+                temp = temp->next;
+            }
+            ListNode* newNode = new ListNode(sum);
+            sum = 0;
+            prev->next = newNode;
+            prev = newNode;
+            temp = temp->next;
+        }
+        head = head->next;
+        return head;
+    }
+};
+
 int main() {
   vector<int> arr = {1,2,3,4};
   Node* head = convertarraytoLL(arr);
