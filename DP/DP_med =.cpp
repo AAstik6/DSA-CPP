@@ -128,3 +128,48 @@ public:
         return ans;
     }
 };
+
+
+// GFG -- subset sum problem..
+class Solution {
+  public:
+    int CheckValid(vector<int>& arr, int sum, bool& ans, int i, int n, vector<vector<int>>& dp_memory) {
+        if (sum == 0) return ans = true;
+        
+        if (i>=n) return 0;
+        
+        if (dp_memory[i][sum] != -1) return dp_memory[i][sum];
+        
+        if (arr[i] > sum) {
+            int a1 = CheckValid(arr, sum, ans, i+1, n, dp_memory);
+            
+            dp_memory[i][sum] = a1;
+            return a1;
+        }
+        else if (arr[i] <= sum) {
+            int a2 = arr[i] + CheckValid(arr, sum - arr[i], ans, i+1, n, dp_memory);
+            int a3 = CheckValid(arr, sum, ans, i+1, n, dp_memory);
+            
+            dp_memory[i][sum] = a2+a3;
+            return a2+a3;
+        }
+        return 0;
+    }
+    bool isSubsetSum(vector<int>& arr, int sum) {
+        // code here
+        bool ans = false;
+        int n = arr.size();
+        int m = sum;
+        int i = 0;
+        
+        // for memoization.
+        vector<vector<int>> dp_memory(n);
+        for (int i=0; i<n; i++) {
+            vector<int> t(m+1,-1);
+            dp_memory[i] = t;
+        }
+        
+        CheckValid(arr, sum, ans, i, n, dp_memory);
+        return ans;
+    }
+};
