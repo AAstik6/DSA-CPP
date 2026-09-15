@@ -43,3 +43,88 @@ class Solution {
         
     }
 };
+
+// 0/1 knapsack problem with tabulation.
+class Solution {
+  public:
+    int knapsack(int W, vector<int> &val, vector<int> &wt) {
+        // knapsack with tabulation.
+        int n = val.size();
+        int m = wt.size();
+        
+        vector<vector<int>> dp_memory(n+1);
+        for (int i=0; i<=n; i++) {
+            vector<int> t(W+1);
+            dp_memory[i] = t;
+        }
+        for (int j=0; j<=W; j++) {
+            dp_memory[n][j] = 0; // filled the last row with 0.
+        }
+        
+        for (int i=n-1; i>=0; i--) {
+            for (int j=0; j<=W; j++) {
+                if (j - wt[i] < 0) { // without choice...
+                    dp_memory[i][j] = dp_memory[i+1][j];
+                }
+                else if (j - wt[i] >= 0) { // with choice...
+                    dp_memory[i][j] = max(val[i] + dp_memory[i+1][j - wt[i]], dp_memory[i+1][j]);
+                }
+            }
+        }
+        return dp_memory[0][W];
+    }
+};
+
+
+/**
+ * Definition for a binary tree node.
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode() : val(0), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x) : val(x), left(nullptr), right(nullptr) {}
+ *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
+ * };
+ */
+class Solution {
+public:
+    int MaxProfit(TreeNode*& temp, map<TreeNode*,vector<int>>& HashMemory, bool take) {
+        if (temp == NULL) return 0;
+
+        if (HashMemory[temp][take] != -1) return HashMemory[temp][take];
+
+        if (take == 1) {
+            int m1 = temp->val + MaxProfit(temp->left, HashMemory, 0) + MaxProfit(temp->right, HashMemory, 0);
+            int m2 = MaxProfit(temp->left, HashMemory, 1) + MaxProfit(temp->right, HashMemory, 1);
+
+            HashMemory[temp][take] = max(m1,m2);
+            return max(m1,m2);
+        }
+        else if (take == 0) {
+            int m3 = MaxProfit(temp->left, HashMemory, 1) + MaxProfit(temp->right, HashMemory, 1);
+
+            HashMemory[temp][take] = m3;
+            return m3;
+        }
+        return 0;
+    }
+
+    void memo(TreeNode* root, map<TreeNode*, vector<int>>& HashMemory) {
+        if (root == NULL) return;
+        memo(root->left, HashMemory);
+        HashMemory[root] = {-1,-1};
+        memo(root->right, HashMemory);
+        return;
+    }
+
+    int rob(TreeNode* root) {
+        map<TreeNode*, vector<int>> HashMemory;
+        memo(root, HashMemory);
+
+        bool take = true;
+        TreeNode* temp = root;
+        int ans = MaxProfit(temp,HashMemory,take);
+        return ans;
+    }
+};

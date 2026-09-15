@@ -583,6 +583,7 @@ public:
                     int neigh = heights[r][c];
                     int diff = abs(heights[row][col] - neigh);
                     int effort = max(dist,diff);
+                    
                     if (effort < dist_check[r][c]) {
                         dist_check[r][c] = effort;
                         pq.push({effort, {r,c}});
