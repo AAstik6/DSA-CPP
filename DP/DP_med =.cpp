@@ -133,31 +133,32 @@ public:
 // GFG -- subset sum problem..
 class Solution {
   public:
-    int CheckValid(vector<int>& arr, int sum, bool& ans, int i, int n, vector<vector<int>>& dp_memory) {
-        if (sum == 0) return ans = true;
-        
-        if (i>=n) return 0;
+    bool CheckValid(vector<int>& arr, int sum, int i, int n, vector<vector<int>>& dp_memory) {
+        if (i >= n) {
+            if (sum == 0) return true;
+            else return false;
+        }
         
         if (dp_memory[i][sum] != -1) return dp_memory[i][sum];
         
         if (arr[i] > sum) {
-            int a1 = CheckValid(arr, sum, ans, i+1, n, dp_memory);
+            bool a1 = CheckValid(arr, sum, i+1, n, dp_memory);
             
             dp_memory[i][sum] = a1;
             return a1;
         }
         else if (arr[i] <= sum) {
-            int a2 = arr[i] + CheckValid(arr, sum - arr[i], ans, i+1, n, dp_memory);
-            int a3 = CheckValid(arr, sum, ans, i+1, n, dp_memory);
+            bool a2 = CheckValid(arr, sum - arr[i], i+1, n, dp_memory);
+            bool a3 = CheckValid(arr, sum, i+1, n, dp_memory);
             
-            dp_memory[i][sum] = a2+a3;
-            return a2+a3;
+            dp_memory[i][sum] = a2 || a3;
+            return a2 || a3;
         }
         return 0;
     }
+    
     bool isSubsetSum(vector<int>& arr, int sum) {
         // code here
-        bool ans = false;
         int n = arr.size();
         int m = sum;
         int i = 0;
@@ -169,7 +170,33 @@ class Solution {
             dp_memory[i] = t;
         }
         
-        CheckValid(arr, sum, ans, i, n, dp_memory);
+        bool ans = CheckValid(arr, sum, i, n, dp_memory);
         return ans;
+    }
+};
+// with Tabulation.
+class Solution {
+  public:
+    bool isSubsetSum(vector<int>& arr, int sum) {
+        // code here
+        int n = arr.size();
+        vector<vector<bool>> dpMemory(n+1);
+        for (int i=0; i<n+1; i++) {
+            vector<bool> t(sum+1, false);
+            dpMemory[i] = t;
+        }
+        dpMemory[n][0] = true;
+        
+        for(int i=n-1; i>=0; i--) {
+            for (int j=0; j<=sum; j++) {
+                if(arr[i] > j) { // with no choice.
+                    dpMemory[i][j] = dpMemory[i+1][j];
+                }
+                else if (arr[i] <= j) {
+                    dpMemory[i][j] = dpMemory[i+1][j] || dpMemory[i+1][j-arr[i]];
+                }
+            }
+        }
+        return dpMemory[0][sum];
     }
 };

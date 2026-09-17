@@ -765,7 +765,7 @@ public:
         int min_time = time_track[n-1][m-1];
         return min_time;
     }
-};
+}; 
 
 // HARD -- 778. Swim in Rising Water
 class Solution {
@@ -997,5 +997,32 @@ public:
             }
         }
         return ans;
+    }
+};
+
+// 787. Cheapest Flights Within K Stops
+class Solution {
+public:
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
+        vector<int> res(n, INT_MAX);
+        vector<int> temp(n, INT_MAX);
+        res[src] = 0;
+        temp[src] = 0;
+
+        for (int i=0; i<k+1; i++) {
+            for (int j=0; j<flights.size(); j++) {
+                vector<int> edge = flights[j];
+                int source = edge[0];
+                int destination = edge[1];
+                int cost = edge[2];
+
+                if (res[source] != INT_MAX && res[source]+cost < temp[destination]) {
+                    temp[destination] = res[source]+cost;
+                }
+            }
+            res = temp;
+        }
+        if (res[dst] == INT_MAX) return -1;
+        return res[dst];
     }
 };
