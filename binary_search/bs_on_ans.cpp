@@ -490,3 +490,40 @@ public:
     }
 };
 
+
+// 2594. Minimum Time to Repair Cars
+class Solution {
+public:
+    bool isPossible(vector<int>& ranks, long long mid, int cars, int n) {
+        long long carLeft = cars; // long long as the carLeft can go to -ve numbers
+        for (int i=0; i<n; i++) {
+            carLeft = carLeft - int(sqrt(mid/ranks[i]));
+        }
+        if (carLeft <= 0) return true;
+        return false;
+    }
+
+    long long repairCars(vector<int>& ranks, int cars) {
+        int MaxRank = INT_MIN;
+        int n = ranks.size();
+        for (int i=0; i<n; i++) {
+            MaxRank = max(MaxRank, ranks[i]);
+        }
+
+        long long high = MaxRank * ((long long)cars*cars); // (long long) to prevent int overflow.
+        long long low = 0;
+        long long minTimeTaken = -1;
+        while (high >= low) {
+            long long mid = (high + low)/2;
+            if (isPossible(ranks, mid, cars, n) == true) {
+                minTimeTaken = mid;
+                high = mid-1;
+            }
+            else {
+                low = mid+1;
+            }
+        }
+        return minTimeTaken;
+    }
+};
+

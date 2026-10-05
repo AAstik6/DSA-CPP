@@ -919,6 +919,44 @@ public:
     }
 };
 
+// 567 -- permutations in string.
+class Solution {
+public:
+    bool checkInclusion(string s1, string s2) {
+        int m = s1.size();
+        int n = s2.size();
+
+        if (m > n) return false;
+
+        map<char,int> mpp1;
+        map<char,int> mpp2;
+
+        for (int i=0; i<m; i++) {
+            mpp1[s1[i]]++;
+        }
+
+        int high = 0;
+        int low = 0;
+        for (high = 0; high < m; high++) {
+            mpp2[s2[high]]++;
+        }
+        if (mpp2 == mpp1) return true;
+
+        while (high < n) {
+            mpp2[s2[high]]++;
+
+            while ((high - low)+1 > m) {
+                mpp2[s2[low]]--;
+                if (mpp2[s2[low]] == 0) mpp2.erase(s2[low]);
+                low++;
+            }
+            if (mpp1 == mpp2) return true;
+            high++;
+        }
+        return false;
+    }
+};
+
 };
 int main () {
   int n; 
