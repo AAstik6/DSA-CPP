@@ -957,6 +957,32 @@ public:
     }
 };
 
+// 5. Longest Palindromic Substring..
+class Solution {
+public:
+    bool isPalindrome(int i, int j, string& s) {
+        if (s[i] != s[j]) return false;
+        else if (i >= j) return true;
+        return isPalindrome(i+1, j-1, s);
+    }
+    string longestPalindrome(string s) {
+        int start = 0;
+        int MaxLen = 1;
+        int n = s.size();
+
+        for (int i=0; i<n; i++) {
+            for (int j=i; j<n; j++) {
+                int length = (j-i)+1;
+                if (length > MaxLen && isPalindrome(i, j, s) == true) {
+                    MaxLen = length;
+                    start = i;
+                }
+            }
+        }
+        return s.substr(start, MaxLen);
+    }
+};
+
 };
 int main () {
   int n; 
